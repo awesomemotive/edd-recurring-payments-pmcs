@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Easy Digital Downloads - Recurring Payments - Prevent "
+"Multiple Cart Subscriptions\n"
+"POT-Creation-Date: 2014-06-26 16:43+1200\n"
+"PO-Revision-Date: 2014-06-26 16:44+1200\n"
+"Last-Translator: Andrew Munro, Sumobi <andrew@sumobi.com>\n"
+"Language-Team: Sumobi <andrew@sumobi.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.5\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../edd-recurring-pmcs.php:157
+#, php-format
+msgid "You must install %sEasy Digital Downloads%s to use %s."
+msgstr ""
+
+#: ../edd-recurring-pmcs.php:161
+#, php-format
+msgid ""
+"%s requires Easy Digital Downloads Version 1.9 or greater. Please update "
+"Easy Digital Downloads."
+msgstr ""
+
+#: ../edd-recurring-pmcs.php:209
+msgid "View more plugins for Easy Digital Downloads by Sumobi"
+msgstr ""
+
+#: ../edd-recurring-pmcs.php:209
+msgid "Author's EDD plugins"
+msgstr ""
+
+#: ../edd-recurring-pmcs.php:265
+msgid ""
+"Sorry, you can only purchase one subscription at a time. One already exists "
+"in the shopping cartrewre."
+msgstr ""

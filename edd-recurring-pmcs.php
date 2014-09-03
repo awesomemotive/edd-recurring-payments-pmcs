@@ -261,7 +261,7 @@ if ( ! class_exists( 'EDD_Recurring_Payments_PMCS' ) ) {
 		}
 
 		public function notice() {
-			return apply_filters( 'eddrp_pmcs_notice', __( 'Sorry, you can only purchase one subscription at a time. One already exists in the shopping cartrewre.', 'eddrp_pmcs' ) );
+			return apply_filters( 'eddrp_pmcs_notice', __( 'Sorry, you can only purchase one subscription at a time. One already exists in the shopping cart.', 'eddrp_pmcs' ) );
 		}
 
 		/**

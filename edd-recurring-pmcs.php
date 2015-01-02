@@ -3,7 +3,7 @@
 Plugin Name: Easy Digital Downloads - Recurring Payments - Prevent Multiple Cart Subscriptions
 Plugin URI: https://easydigitaldownloads.com/extensions/recurring-payments/?ref=166
 Description: Prevent multiple subscriptions from being added to the cart
-Version: 1.0
+Version: 1.0.1
 Author: Andrew Munro, Sumobi
 Author URI: http://sumobi.com/
 License: GPL-2.0+
@@ -34,7 +34,7 @@ if ( ! class_exists( 'EDD_Recurring_Payments_PMCS' ) ) {
 		/**
 		 * Plugin Version
 		 */
-		private $version = '1.0';
+		private $version = '1.0.1';
 
 		/**
 		 * Plugin Title
@@ -106,7 +106,7 @@ if ( ! class_exists( 'EDD_Recurring_Payments_PMCS' ) ) {
 		 * @return void
 		 */
 		private function hooks() {
-			add_action( 'admin_init', array( $this, 'activation' ) );
+
 			add_action( 'after_setup_theme', array( $this, 'load_textdomain' ) );
 			add_action( 'wp_footer', array( $this, 'js' ) );
 			add_action( 'edd_pre_add_to_cart', array( $this, 'pre_add_to_cart' ) );
@@ -117,49 +117,6 @@ if ( ! class_exists( 'EDD_Recurring_Payments_PMCS' ) ) {
 			do_action( 'eddrp_pmcs_setup_actions' );
 		}
 
-		/**
-		 * Activation function fires when the plugin is activated.
-		 *
-		 * This function is fired when the activation hook is called by WordPress,
-		 * it flushes the rewrite rules and disables the plugin if EDD isn't active
-		 * and throws an error.
-		 *
-		 * @since 1.0
-		 * @access public
-		 *
-		 * @return void
-		 */
-		public function activation() {
-			if ( ! class_exists( 'Easy_Digital_Downloads' ) ) {
-				// is this plugin active?
-				if ( is_plugin_active( plugin_basename( __FILE__ ) ) ) {
-					// deactivate the plugin
-			 		deactivate_plugins( plugin_basename( __FILE__ ) );
-			 		// unset activation notice
-			 		unset( $_GET[ 'activate' ] );
-			 		// display notice
-			 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-				}
-
-			}
-		}
-
-		/**
-		 * Admin notices
-		 *
-		 * @since 1.0
-		*/
-		public function admin_notices() {
-			$edd_plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/easy-digital-downloads/easy-digital-downloads.php', false, false );
-
-			if ( ! is_plugin_active('easy-digital-downloads/easy-digital-downloads.php') ) {
-				echo '<div class="error"><p>' . sprintf( __( 'You must install %sEasy Digital Downloads%s to use %s.', 'eddrp_pmcs' ), '<a href="http://easydigitaldownloads.com" title="Easy Digital Downloads" target="_blank">', '</a>', $this->title ) . '</p></div>';
-			}
-
-			if ( $edd_plugin_data['Version'] < '1.9' ) {
-				echo '<div class="error"><p>' . sprintf( __( '%s requires Easy Digital Downloads Version 1.9 or greater. Please update Easy Digital Downloads.', 'eddrp_pmcs' ), $this->title ) . '</p></div>';
-			}
-		}
 
 		/**
 		 * Loads the plugin language files
@@ -310,39 +267,47 @@ if ( ! class_exists( 'EDD_Recurring_Payments_PMCS' ) ) {
 			if ( $cart_download_ids ) {
 				// check cart to see if another recurring download exists
 				foreach ( $cart_download_ids as $id ) {
-					if ( 'yes' === get_post_meta( $id, 'edd_recurring', true ) && ! in_array( $download_id, $cart_download_ids ) ) {
+					if ( 'yes' == get_post_meta( $id, 'edd_recurring', true ) && in_array( $download_id, $cart_download_ids ) ) {
 						wp_die( $this->notice(), '', array( 'back_link' => true ) );
 					}
 				}
+				
 			}
 		}
-
 	}
-}
 
-/**
- * Loads a single instance of EDD_Recurring_Payments_PMCS
- *
- * This follows the PHP singleton design pattern.
- *
- * Use this function like you would a global variable, except without needing
- * to declare the global.
- *
- * @example <?php $eddrp_pmcs = eddrp_pmcs(); ?>
- *
- * @since 1.0
- *
- * @see EDD_Recurring_Payments_PMCS::get_instance()
- *
- * @return object Returns an instance of the EDD_Recurring_Payments_PMCS class
- */
-function eddrp_pmcs() {
-	return EDD_Recurring_Payments_PMCS::get_instance();
-}
+	/**
+	 * Loads a single instance
+	 *
+	 * This follows the PHP singleton design pattern.
+	 *
+	 * Use this function like you would a global variable, except without needing
+	 * to declare the global.
+	 *
+	 * @example <?php $eddrp_pmcs = eddrp_pmcs(); ?>
+	 *
+	 * @since 1.0
+	 *
+	 * @see EDD_Recurring_Payments_PMCS::get_instance()
+	 *
+	 * @return object Returns an instance of the EDD_Recurring_Payments_PMCS class
+	 */
+	function eddrp_pmcs() {
 
-/**
- * Loads plugin after all the others have loaded and have registered their hooks and filters
- *
- * @since 1.0
-*/
-add_action( 'plugins_loaded', 'eddrp_pmcs', apply_filters( 'eddrp_pmcs_action_priority', 10 ) );
+	    if ( ! class_exists( 'Easy_Digital_Downloads' ) ) {
+
+	        if ( ! class_exists( 'EDD_Extension_Activation' ) ) {
+	            require_once 'includes/class-activation.php';
+	        }
+
+	        $activation = new EDD_Extension_Activation( plugin_dir_path( __FILE__ ), basename( __FILE__ ) );
+	        $activation = $activation->run();
+	        
+	    } else {
+	        return EDD_Recurring_Payments_PMCS::get_instance();
+	    }
+	}
+	add_action( 'plugins_loaded', 'eddrp_pmcs', apply_filters( 'eddrp_pmcs_action_priority', 10 ) );
+
+
+}
